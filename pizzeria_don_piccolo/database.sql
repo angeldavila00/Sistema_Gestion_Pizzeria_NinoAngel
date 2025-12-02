@@ -90,3 +90,89 @@ create table producto_ingrediente(
         references ingrediente(id)
 );
 
+-- Tabla pedido
+create table pedido(
+    id int primary key not null auto_increment,
+    cliente_id int not null,
+    vendedor_id int,
+    fecha_orden datetime not null default current_timestamp,
+    estado enum('Pendiente','En proceso','Enviado','Entregado','Cancelado')not null default 'Pendiente',
+    total double not null,
+    canal_venta enum('Mostrador', 'Telefono', 'WhatsApp', 'Web', 'Otro')not null default 'Mostrador',
+    foreign key(cliente_id) references cliente(id),
+    foreign key(vendedor_id) references vendedor(id)
+);
+
+-- Tabla detalle_pedido
+
+create table detalle_pedido(
+    id int primary key not null auto_increment,
+    pedido_id int not null,
+    producto_id int not null,
+    cantidad int not null,
+    precio_unitario double not null,
+    subtotal double not null,
+    foreign key(pedido_id) references pedido(id),
+    foreign key(producto_id) references producto(id)
+);
+
+-- Tabla domicilio
+create table domicilio(
+    id int not null primary key auto_increment,
+    pedido_id int not null,
+    repartidor_id int not null,
+    direccion_entrega varchar(100) not null,
+    precio_domicilio double not null,
+    descripcion varchar(50),
+    hora_entrega datetime,
+    foreign key(pedido_id) references pedido(id),
+    foreign key(repartidor_id) references repartidor(id)
+);
+
+-- Tabla pago
+create table pago(
+    id int primary key not null auto_increment,
+    pedido_id int not null,
+    metodo_pago enum('Tarjeta', 'Efectivo', 'Mixto') not null,
+    monto double not null,
+    fecha_pago datetime not null default current_timestamp,
+    descripcion varchar(100),
+    foreign key(pedido_id) references pedido(id)
+
+);
+
+-- Tabla proveedor
+create table proveedor(
+    id int primary key not null auto_increment,
+    nit varchar(50) not null,
+    razon_social varchar(50) not null,
+    correo varchar(100) not null,
+    telefono int not null,
+    direccion varchar(100) not null,
+    unique(nit)
+);
+
+-- Tabla inventario
+
+create table inventario(
+    id int not null primary key auto_increment,
+    proveedor_id int not null,
+    vendedor_id int not null,
+    fecha_compra datetime not null default current_timestamp,
+    total double not null,
+    foreign key(proveedor_id) references proveedor(id),
+    foreign key(vendedor_id) references vendedor(id)
+);
+
+
+-- Tabla detalle_inventario
+create table detalle_inventario(
+    id int primary key not null auto_increment,
+    inventario_id int not null,
+    producto_id int not null,
+    cantidad int not null,
+    costo_unitario double not null,
+    subtotal double not null,
+    foreign key(inventario_id) references inventario(id),
+    foreign key(producto_id) references producto(id)
+);
