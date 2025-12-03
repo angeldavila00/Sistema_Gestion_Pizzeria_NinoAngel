@@ -4,16 +4,15 @@ Vista de desempeño de repartidores (número de entregas, tiempo promedio, zona)
 Vista de stock de ingredientes por debajo del mínimo permitido.*/
 
 -- Vista de resumen de pedidos por cliente
-create view resumen_pedidos_cliente as 
-select 
+
+create view resumen_pedidos_cliente as
+select
     p.id,
     concat(p.nombre, ' ' , p.apellido) as nombre_cliente,
-    count(pe.id) as cantidad_pedidos,
-    sum(pe.total),0 as total_gastado
-    from persona p
-    inner join cliente c on p.id = c.id
-    left join pedido pe on c.id = pe.cliente_id
-    group by p.id, p.nombre, p.apellido;
+    count(*) as cantidad_pedidos,
+    coalesce(sum(pe.total),0) as total_gastado
+    from pedido pe left join persona p on pe.cliente_id=p.id
+    group by p.id;
 
 select * from resumen_pedidos_cliente;
 
@@ -27,7 +26,7 @@ select
     concat(p.nombre, ' ' , p.apellido) as nombre_repartidor,
     count(d.id) as numero_entregas,
     z.nombre_zona,
-    avg(timestampdiff(minute, pe.fecha_orden, d.hora_entrega)) as tiempo_promedio_minutos
+    truncate(avg(timestampdiff(minute, pe.fecha_orden, d.hora_entrega)),0) as tiempo_promedio_minutos
     from persona p
     inner join repartidor r on r.id = p.id
     left join zona z on r.zona_id= z.id
