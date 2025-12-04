@@ -59,6 +59,7 @@ begin
         where p.id = v_id_pedido;
     end if;
 end$$
+delimiter ;
 
 call pedido_entregado(3);
 
