@@ -169,6 +169,16 @@ create table pago(
     foreign key(pedido_id) references pedido(id)
 );
 
+-- historial_precios
+create table historial_precios (
+    id int primary key not null auto_increment,
+    producto_id,
+    precio_anterior double ,
+    precio_nuevo double l,
+    fecha_cambio datetime,
+    foreign key (producto_id) references producto(id)
+);
+
 -----------------------------------------
     Insersion de datos en las tablas
 -----------------------------------------
@@ -207,7 +217,7 @@ insert into zona (nombre_zona) values
 insert into repartidor (id, estado, zona_id) values
 (7,'Disponible',1),
 (8,'Disponible',2),
-(9,'No disponible',3);
+(9,'No_disponible',3);
 
 -- Datos de unidad_medida
 insert into unidad_medida (nombre) values

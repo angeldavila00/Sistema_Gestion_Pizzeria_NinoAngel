@@ -28,7 +28,7 @@ delimiter ;
 
 select calcular_total_pedido(2);
 
--- Función para calcular la ganancia neta diaria
+-- Función para calcular la ganancia neta diaria (PENDIENTE...)
 delimiter $$
 create function ganancia_neta_diaria(
     v_fecha_diaria date
@@ -37,19 +37,37 @@ returns double
 not deterministic
 reads sql data
 begin 
-    declare venta_total double;
-    declare costo_ingredientes double;
+end;$$
+delimiter ;
 
-    select sum(total) into venta_total
-    from pedido
-    where date(fecha_orden) = v_fecha_diaria;
+-- Procedimiento para cambiar automáticamente el estado del pedido a “entregado” cuando se registre la hora de entrega
+delimiter $$
+create procedure pedido_entregado(
+    in v_id_pedido int
+)
+begin
+    declare v_hora_entrega datetime;
+    select
+    hora_entrega into v_hora_entrega
+    from domicilio d
+    where d.pedido_id = v_id_pedido;
 
-    select sum(pi.cantidad* dp.cantidad*i.precio_compra) into costo_ingredientes
-    from detalle_pedido dp
-    left join producto_ingrediente pi on dp.producto_id = pi.producto_id
-    left join ingrediente i on pi.ingrediente_id = i.id
-    left join pedido p on dp.pedido_id = p.id
-    where date(p.fecha_orden) = v_fecha_diaria;
+
+    if v_hora_entrega <= now() then
+        update pedido p
+        set p.estado = 'Entregado'
+        where p.id = v_id_pedido;
+    end if;
+end$$
+
+call pedido_entregado(3);
+
+drop procedure pedido_entregado;
+update pedido set estado = 'Pendiente' where id= 3;
+select * from pedido;
+select * from domicilio;
+
+    
     
     
 

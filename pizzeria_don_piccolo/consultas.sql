@@ -26,6 +26,7 @@ delimiter ;
 call clientes_pedidos_entre_fechas("2000-10-10", "2026-10-10");
 
 -- Pizzas más vendidas (GROUP BY y COUNT).
+delimiter $$
 create procedure pizzas_mas_vendidas()
 begin
     select
@@ -36,11 +37,13 @@ begin
     left join detalle_pedido dp on pi.id = dp.producto_id
     group by pi.id
     order by cantidad_vendida desc;
-end;
+end$$
+delimiter ;
 
 call pizzas_mas_vendidas();
 
 -- Pedidos por repartidor (JOIN).
+delimiter $$
 create procedure pedidos_por_repartidor()
 begin
     select
@@ -51,11 +54,13 @@ begin
     inner join repartidor r on p.id = r.id
     left join domicilio d on r.id = d.repartidor_id
     group by p.id;
-end;
+end$$
+delimiter ;
 
 call pedidos_por_repartidor();
 
 -- Promedio de entrega por zona (AVG y JOIN).
+delimiter $$
 create procedure promedio_entrega_por_zona()
 begin
     select 
@@ -67,11 +72,13 @@ begin
         left join domicilio d on r.id = d.repartidor_id
         left join pedido pe on d.pedido_id =pe.id
         group by z.id;
-end;
+end$$
+delimiter ;
 
 call promedio_entrega_por_zona;
 
 -- Clientes que gastaron más de un monto (HAVING).
+delimiter $$
 create procedure clientes_que_gastaron_mas_de(
     in monto_minimo double
 )
@@ -84,11 +91,13 @@ begin
     left join pedido p on pe.id = p.cliente_id
     HAVING monto_gastado >= monto_minimo
     group by pe.id;
-end;
+end$$
+delimiter ;
 
 call clientes_que_gastaron_mas_de(50000);
 
 -- Búsqueda por coincidencia parcial de nombre de pizza (LIKE).
+delimiter $$
 create procedure busqueda_pizza_por_nombre(
     in nombre_parcial varchar(100)
 )
@@ -99,11 +108,13 @@ begin
         p.precio_producto
         from producto p
         where p.nombre like concat('%', nombre_parcial, '%');
-end;
+end$$
+delimiter ;
 
 call busqueda_pizza_por_nombre('M');
 
 -- Subconsulta para obtener los clientes frecuentes (más de 5 pedidos mensuales).
+delimiter $$
 create procedure clientes_frecuentes()
 begin
     select 
@@ -114,6 +125,7 @@ begin
         left join pedido p on pe.id = p.cliente_id 
         group by pe.id
         having cantidad_pedidos > 5;
-end;
+end$$
+delimiter ;
 
 call clientes_frecuentes();
