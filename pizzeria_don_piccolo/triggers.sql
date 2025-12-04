@@ -49,6 +49,7 @@ begin
     set estado = 'Disponible' where d.pedido_id = new.id;
     end if;
 end$$
+delimiter ;
 
 update pedido set estado = 'Entregado' where id=5;
 
