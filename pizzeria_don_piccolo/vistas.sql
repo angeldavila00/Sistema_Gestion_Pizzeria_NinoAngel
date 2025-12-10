@@ -19,7 +19,7 @@ select * from resumen_pedidos_cliente;
 drop view resumen_pedidos_cliente;
 
 -- Vista de desempeño de repartidores
-
+delimiter $$
 create view desempeño_repartidores as
 select
     p.id,
@@ -32,8 +32,8 @@ select
     left join zona z on r.zona_id= z.id
     left join domicilio d on r.id = d.repartidor_id
     left join pedido pe on d.pedido_id=pe.id
-    group by r.id;
-
+    group by r.id; $$
+delimiter ;
 select * from desempeño_repartidores;
 
 -- Vista de stock de ingredientes por debajo del mínimo permitido. (menos de 5)

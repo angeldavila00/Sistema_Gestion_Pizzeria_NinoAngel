@@ -161,3 +161,5 @@ delimiter ;
 
 
 CALL clientes_entre_fechas('2025-11-10 00:00:00', '2025-11-14 23:59:59');
+
+
