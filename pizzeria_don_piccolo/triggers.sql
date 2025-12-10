@@ -53,3 +53,7 @@ delimiter ;
 
 update pedido set estado = 'Entregado' where id=5;
 
+--------------------------
+-- EJERCICIOS   
+--------------------------
+

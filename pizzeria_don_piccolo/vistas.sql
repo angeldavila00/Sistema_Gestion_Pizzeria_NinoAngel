@@ -49,3 +49,19 @@ select
 
 select * from vista_stock;
 
+-------------------------
+-- EJERCICIOS 
+-------------------------
+
+-- Auditoría de cambios de precios (antes y después)
+delimiter $$
+CREATE TABLE auditoria_precio_producto (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    producto_id INT NOT NULL,
+    precio_anterior DOUBLE,
+    precio_nuevo DOUBLE,
+    fecha_cambio DATETIME DEFAULT CURRENT_TIMESTAMP,
+    usuario VARCHAR(50),
+    FOREIGN KEY(producto_id) REFERENCES producto(id)
+);
+delimiter ;

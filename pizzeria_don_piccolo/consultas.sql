@@ -129,3 +129,35 @@ end$$
 delimiter ;
 
 call clientes_frecuentes();
+
+-----------------------------
+--- EJERCICIOS APARTE ---
+-----------------------------
+
+-- -- Clientes con pedidos entre fechas (JOIN y BETWEEN).
+drop procedure clientes_entre_fechas;
+
+DELIMITER $$
+create procedure clientes_entre_fechas( 
+    in p_fecha_inicio date,
+    in p_fecha_final date
+)
+
+begin
+    select 
+    c.id as cliente_id,
+    concat(per.nombre, ' ',per.apellido) as nombre_cliente,
+    count(ped.id) as cantidad_pedidos,
+    count(ped.total) as total_gastado
+    from cliente c
+    inner join persona per on per.id=c.id
+    left join pedido ped on ped.cliente_id = c.id
+    where ped.fecha_orden between p_fecha_inicio and p_fecha_final
+    group by c.id, nombre_cliente
+    order by total_gastado desc;
+end$$
+delimiter ;
+
+
+
+CALL clientes_entre_fechas('2025-11-10 00:00:00', '2025-11-14 23:59:59');

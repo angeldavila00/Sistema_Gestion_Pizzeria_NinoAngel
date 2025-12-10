@@ -68,8 +68,34 @@ update pedido set estado = 'Pendiente' where id= 3;
 select * from pedido;
 select * from domicilio;
 
+-----------------------------
+--- EJERCICIOS APARTE ---
+-----------------------------
+
+-- Pizzas más vendidas (SUM y JOIN).
     
-    
+delimiter $$
+create function pizza_mas_vandida()
+returns int
+not deterministic
+reads sql data
+begin
+    declare v_id int;
+    select 
+    p.id
+    into v_id 
+    from detalle_pedido dp
+    inner join producto p on dp.producto_id = p.id
+    group by p.id
+    order by sum(dp.cantidad) desc
+    limit 1;
+
+    return v_id;
+end$$
+delimiter ;
+
+
+
     
 
 
